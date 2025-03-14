@@ -102,23 +102,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: black;
-        color: #c8cbcd;
-    }
-
-    a {
-        color: #fff;
-    }
-
-    .content__social-item img,
-    .footer__social-item img {
-        filter: invert(1);
-    }
-}
-
 /* Main Container */
 .main {
     margin: auto;
