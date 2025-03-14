@@ -160,9 +160,10 @@ a:hover {
 }
 .content__stack {
     display: flex;
+    gap: 15px;
     max-width: 36rem;
-    font-size: 25px;
-    padding-top: 0px;
+    font-size: 20px;
+    padding-top: 3px;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
     flex-direction: row;
@@ -285,4 +286,11 @@ a:hover {
     vertical-align: middle; /* Выравнивание по центру текста */
     width: 200px !important;
     height: auto !important;
+}
+
+.custom-background {
+    background-image: url('assets/img/block.png');
+    background-size: cover; /* Масштабирование фона */
+    background-position: center; /* Позиция фона */
+    background-repeat: no-repeat; /* Запрет повторения фона */
 }
