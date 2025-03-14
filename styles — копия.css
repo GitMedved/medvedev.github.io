@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
-
 /***
     The new CSS reset - version 1.7.3 (last updated 7.8.2022)
     GitHub page: https://github.com/elad2412/the-new-css-reset
@@ -8,7 +7,7 @@
 /*
     Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
     - The "symbol *" part is to solve Firefox SVG sprite bug
-*/
+ */
 *:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
     all: unset;
     display: revert;
@@ -36,41 +35,41 @@ img {
     max-width: 100%;
 }
 
-/* Removes spacing between cells in tables */
+/* removes spacing between cells in tables */
 table {
     border-collapse: collapse;
 }
 
-/* Safari - solving issue when using user-select:none on the <body> text input doesn't work */
+/* Safari - solving issue when using user-select:none on the <body> text input doesn't working */
 input, textarea {
     -webkit-user-select: auto;
 }
 
-/* Revert the 'white-space' property for textarea elements on Safari */
+/* revert the 'white-space' property for textarea elements on Safari */
 textarea {
     white-space: revert;
 }
 
-/* Minimum style to allow styling meter element */
+/* minimum style to allow to style meter element */
 meter {
     -webkit-appearance: revert;
     appearance: revert;
 }
 
-/* Reset default text opacity of input placeholder */
+/* reset default text opacity of input placeholder */
 ::placeholder {
     color: unset;
 }
 
-/* Fix the feature of 'hidden' attribute.
+/* fix the feature of 'hidden' attribute.
    display:revert; revert to element instead of attribute */
 :where([hidden]) {
     display: none;
 }
 
-/* Revert for bug in Chromium browsers
-   - Fix for the content editable attribute will work properly.
-   - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element */
+/* revert for bug in Chromium browsers
+   - fix for the content editable attribute will work properly.
+   - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element*/
 :where([contenteditable]:not([contenteditable="false"])) {
     -moz-user-modify: read-write;
     -webkit-user-modify: read-write;
@@ -79,30 +78,25 @@ meter {
     -webkit-user-select: auto;
 }
 
-/* Apply back the draggable feature - exist only in Chromium and Safari */
+/* apply back the draggable feature - exist only in Chromium and Safari */
 :where([draggable="true"]) {
     -webkit-user-drag: element;
 }
 
-/* Global Styles */
 body {
     font-family: 'Roboto', sans-serif;
     color: #333131;
-    margin: 0;
-    padding: 0;
 }
 
 a {
     color: black;
     font-weight: 600;
-    text-decoration: none;
 }
 
 a:hover {
     text-decoration: underline;
 }
 
-/* Dark Mode */
 @media (prefers-color-scheme: dark) {
     body {
         background-color: black;
@@ -114,30 +108,16 @@ a:hover {
     }
 
     .content__social-item img,
-    .footer__social-item img {
+    .footer__social-item img{
         filter: invert(1);
     }
 }
 
-/* Main Container */
 .main {
     margin: auto;
-    max-width: 47.5rem;
-    padding: 0 1rem;
+    width: 47.5rem;
 }
 
-/* Header */
-.header {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 0.2rem;
-}
-
-.header span {
-    margin-left: 3px;
-}
-
-/* Content Hello Section */
 .content__hello {
     display: flex;
     margin-top: 4.2rem;
@@ -170,65 +150,68 @@ a:hover {
     letter-spacing: 0.03em;
 }
 
-/* Stack Section */
+.header {
+    display: flex;
+    justify-content: end;
+    margin-top: 0.2rem;
+}
+.header span {
+    margin-left: 3px;
+}
 .content__stack {
     display: flex;
-    gap: 50px;
+    gap: 15px;
     max-width: 36rem;
     font-size: 20px;
     padding-top: 3px;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    flex: 1 1 0%;
+    -webkit-box-pack: start;
+    justify-content: space-between;
 }
-
-.stack-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Social Icons */
 .content__social {
     display: flex;
     max-width: 36rem;
     font-size: 18px;
     padding-top: 5px;
-    gap: 15px; /* Add gap between social items */
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    flex: 1 1 0%;
+    -webkit-box-pack: start;
+    justify-content: space-between;
 }
-
 .content__social-item {
     display: flex;
     align-items: center;
 }
-
 .content__social-item img {
     width: 22px;
     height: 22px;
     margin-right: 4px;
 }
 
-/* About Header */
 .content__about-header {
     font-size: 2.4rem;
-    margin-bottom: 0.01rem;
+    margin-bottom: 0,01rem;
     line-height: 4rem;
     text-transform: uppercase;
-    color: darkgoldenrod;
+    color: red;
 }
 
-/* Subheader */
 .content__subheader {
     font-size: 1.4rem;
     line-height: 4rem;
     text-transform: uppercase;
 }
 
-/* Main Content Items */
 .content__main-item {
     display: flex;
     line-height: 1.8rem;
     margin-bottom: 1.8rem;
 }
-
 .content__main-item.project img {
     max-width: 300px;
     height: auto;
@@ -258,27 +241,25 @@ a:hover {
     font-weight: 200;
     margin-top: 1rem;
 }
-
 .project .main-item__subdescription span {
     font-weight: 400;
 }
 
-/* Posts */
-.post .main-item__title {
+.post .main-item__title{
     font-size: 1.48rem;
     line-height: 2rem;
     font-weight: 500;
-    letter-spacing: 0.05rem;
+    letter-spacing: .05rem;
 }
 
-.post .main-item__title a {
+.post .main-item__title a{
     box-shadow: none;
     letter-spacing: 0.03em;
 }
 
 .post .main-item__date {
     display: inline-block;
-    font-size: 0.94rem;
+    font-size: .94rem;
     font-weight: 700;
     line-height: 1.55rem;
 }
@@ -289,7 +270,6 @@ a:hover {
     margin-bottom: 0.8rem;
 }
 
-/* Footer */
 .footer {
     margin-top: 2rem;
     display: flex;
@@ -302,18 +282,27 @@ a:hover {
     margin-right: 4px;
 }
 
-/* Badge */
 .badge {
-    vertical-align: middle;
+    vertical-align: middle; /* Выравнивание по центру текста */
     width: 200px !important;
     height: auto !important;
 }
 
-/* Custom Background */
 .custom-background {
     background-image: url('assets/img/block.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 1rem; /* Add padding for better spacing */
+    background-size: cover; /* Масштабирование фона */
+    background-position: center; /* Позиция фона */
+    background-repeat: no-repeat; /* Запрет повторения фона */
+}
+
+.content__stack {
+    display: flex; /* Располагаем элементы в одну строку */
+    align-items: center; /* Выравниваем элементы по вертикали */
+    gap: 20px; /* Расстояние между элементами */
+}
+
+.stack-item {
+    display: flex;
+    align-items: center; /* Выравниваем иконку и текст по вертикали */
+    gap: 8px; /* Расстояние между иконкой и текстом */
 }
