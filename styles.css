@@ -217,6 +217,7 @@ a:hover {
     height: auto;
     margin-right: 10px;
     border-radius: 25px;
+    border: 5px solid goldenrod;
 }
 
 .main-item__description img {
