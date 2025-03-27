@@ -166,7 +166,15 @@ a:hover {
 .stack-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
+    flex: 0;
+    min-width: 150px;
+    padding: 5px;
+}
+
+.stack-item img {
+    width: 24px;   
+    height: 24px;  
 }
 
 /* Social Icons */
