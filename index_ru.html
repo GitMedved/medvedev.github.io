@@ -24,9 +24,7 @@
             <div class="content__hello">
                 <img class="content__hello-img" src="assets/img/avatar.jpg" alt="Avatar">
                 <div class="content__hello-text">
-                    <span class="content__name">
-                        <a href="/"><p>Здравствуйте,</p>я Евгений Медведев,<p>начинающий QA-инженер.</p></a>
-                    </span>
+                    <span class="content__description"><br>Здравствуйте,</p>я Евгений Медведев,<p>начинающий QA-инженер.</span>
                     <span class="content__description"><br>Мое портфолио</span>
                     <nav class="content__social">
                         <a href="https://wa.me/+79005698906" target="_blank" class="content__social-item">
@@ -135,7 +133,7 @@
                 <h1 class="content__about-header">Повышение квалификации, курсы</h1>
                 <div class="content__main-item">
                     <div class="main-item__description">
-                        <p>2025 Тестирование ПО с нуля. Теория + Практика</p>
+                        <p>2025 Stepik Тестирование ПО с нуля. Теория + Практика</p>
                         <a href="https://stepik.org/cert/2743498?lang=ru" target="_blank" class="content__social-item">
                             <span>Сертификат</span>
                         </a>
@@ -143,26 +141,23 @@
                 </div>
                 <div class="content__main-item">
                     <div class="main-item__description">
-                        <p>2025 Selenium на Python</p>
+                        <p>2025 Stepik Selenium на Python</p>
                         <a href="https://stepik.org/cert/2790637" target="_blank" class="content__social-item">
+                            <span>Сертификат</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="content__main-item">
+                    <div class="main-item__description">
+                        <p>2025 Stepik Jira: ведение задач на электронных досках</p>
+                        <a href="https://stepik.org/cert/2804940" target="_blank" class="content__social-item">
                             <span>Сертификат</span>
                         </a>
                     </div>
                 </div>
             </div>
             <br></br>
-            <!-- Work Experience Section 
-            <div class="custom-background"> 
-                <h1 class="content__about-header">Work experience</h1>
-                <div class="main-item__description">
-                    <p>At the moment, I do not have direct experience as a QA engineer, but I am actively developing in this direction and eager to dive into the field of testing. My motivation and willingness to learn allow me to quickly acquire new skills and tools.
-
-                        I have extensive experience working with documentation, which has developed my attention to detail, analytical thinking, and ability to structure information. My experience working in teams and managing a department has taught me to effectively collaborate with colleagues, delegate tasks, and meet deadlines. I am confident that these skills will be valuable for successful work in QA, where both technical knowledge and soft skills are essential.
-                        
-                        I am ready to apply my strengths in this new field and contribute to the development of the company's projects.</p>
-                    
-                </div>
-            </div> -->
+            <!-- Work Experience Section -->
             <!--<div class="custom-background"> 
                 <h1 class="content__about-header">Work experience</h1>
                 <h2 class="content__subheader">My first company</h2>
@@ -173,13 +168,13 @@
                 </div>
             </div>        
             <br></br> --> 
-            <!-- Projects Section -->
+             <!-- Projects Section -->
             <div class="custom-background"> 
                 <h1 class="content__about-header">Мои проекты</h1>
                 <div class="content__main-item project">
-                    <a data-fslightbox href="assets/img/project.png">
+                    <p data-fslightbox href="assets/img/project.png">
                         <img src="assets/img/project.png" alt="project1">
-                    </a>
+                    </p>
                     <div>
                         <div class="main-item__title">
                             <p>Project 1</p><p>Тестирование www.ebay.com</p>
@@ -195,34 +190,18 @@
                             <div><a href="assets/Project 1 (ebay)/3. Bug_reports.pdf"><span>Выявленные дефекты</span></a>
                                 <span>|</span>
                                 <a href="assets/Project 1 (ebay)/4. Test_report.pdf"><span>Отчет о тестировании</span></a>
-                            </div>  
+                            <div>
+                                <a href="assets/Project 1 (ebay)/Project_1 (Test cases 3).py" 
+                                download="AutoTests_eBay_Selenium.py"
+                                target="_blank"
+                                onclick="alert('Файл будет доступен для чтения, если хотите его скачать, нажмите Ctrl+S')">
+                                   <span>Автотесты (Python framework for Selenium)</span>
+                                </a>
+                            </div>      
                             </p>
                         </div>
                     </div>
                 </div>
-                <!-- 
-                <div class="content__main-item project">
-                    <a data-fslightbox href="assets/img/project2.png">
-                        <img src="assets/img/project2.png" alt="project2">
-                    </a>
-                    <div>
-                        <div class="main-item__title">
-                            <a href="/example/project.html"><span>Project 2</span></a>
-                        </div>
-                        <div class="main-item__description">
-                            <p>I worked with this project for 1,5 years. I've built the whole system from scratch, and now it's fully working project with a bunch of happy customers.</p>
-                        </div>
-                        <div class="main-item__subdescription">
-                            <p><span>Stack:</span> Nuxt.js, Laravel</p>
-                            <p class="main-item__links">
-                                <a href=""><span>Source Code</span></a>
-                                <span>|</span>
-                                <a href=""><span>Preview</span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                -->
             </div>
             <br></br>
             <!-- Posts Section -->
@@ -241,19 +220,6 @@
                 </article>
             </div>
         </div>
-            <!-- <div class="content__main-item post">
-                <article>
-                    <h2 class="main-item__title">
-                        <a href="#linktopost">A simple thought 2</a>
-                    </h2>
-                    <p class="main-item__date">Sep 13, 2022</p>
-                    <div class="main-item__description">
-                        <p>Be more concerned with your character than your reputation, because your character is what you really are, while your reputation is merely what others think you are.</p>
-                    </div>
-                </article>
-            </div>
-        </div>
-        -->
         <!-- Footer Section -->
         <div class="footer">
             <div>
@@ -264,9 +230,9 @@
                     <a href="https://wa.me/+79005698906" target="_blank" class="footer__social-item">
                         <img src="assets/img/icons/whatsapp.svg" alt="Whatsapp">
                     </a>
-                    <a href="#link" target="_blank" class="footer__social-item">
+                    <!-- <a href="#link" target="_blank" class="footer__social-item">
                         <img src="assets/img/icons/in.svg" alt="LinkedIn">
-                    </a>
+                    </a> -->
                     <a href="https://t.me/unqle_bear" target="_blank" class="footer__social-item">
                         <img src="assets/img/icons/telegram.svg" alt="Telegram">
                     </a>

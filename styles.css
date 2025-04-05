@@ -146,6 +146,8 @@ a:hover {
 .content__name a {
     font-weight: 700;
     letter-spacing: 0.03em;
+    all: unset;
+    pointer-events: none;
 }
 
 .content__description {
