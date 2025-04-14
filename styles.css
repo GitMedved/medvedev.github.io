@@ -201,7 +201,7 @@ a:hover {
 
 /* About Header */
 .content__about-header {
-    font-size: 2.4rem;
+    font-size: 1.4rem;
     margin-bottom: 0.01rem;
     line-height: 4rem;
     text-transform: uppercase;
@@ -311,4 +311,136 @@ a:hover {
     background-repeat: no-repeat;
     padding: 1rem;
     border-radius: 10px;
+    margin-bottom: 1.5rem; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+}
+
+.custom-background:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== Анимации ===== */
+/* Плавное появление при загрузке */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .fade-in {
+    opacity: 0;
+    animation: fadeIn 1s ease forwards;
+  }
+  
+  /* Задержки для последовательного появления */
+  .delay-1 { animation-delay: 0.3s; }
+  .delay-2 { animation-delay: 0.6s; }
+  .delay-3 { animation-delay: 0.9s; }
+  
+  /* Эффекты при наведении */
+  .content__social-item, .stack-item, .project, .post {
+    transition: all 0.3s ease;
+  }
+  
+  .content__social-item:hover, .stack-item:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  
+  .project:hover, .post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  /* Анимация для кнопок */
+  .main-item__links a {
+    position: relative;
+    transition: all 0.3s;
+  }
+  
+  .main-item__links a:hover {
+    color: darkgoldenrod;
+  }
+  
+  .main-item__links a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background: darkgoldenrod;
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  
+  .main-item__links a:hover::after {
+    transform: scaleX(1);
+  }
+  
+  /* Анимация аватара */
+  .content__hello-img {
+    transition: all 0.5s ease;
+  }
+  
+  .content__hello-img:hover {
+    transform: rotate(5deg) scale(1.05);
+    box-shadow: 0 0 20px rgba(218,165,32,0.5);
+  }
+
+/* Стили для сворачиваемых секций */
+.section-content {
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.section-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.toggle-section {
+    background: darkgoldenrod;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: auto; /* Сдвигаем к правому краю */
+    flex-shrink: 0; /* Запрещаем сжатие */
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between; /* Распределяем пространство между текстом и кнопкой */
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 10px 15px; /* Добавляем отступы */
+    margin: 0 -15px; /* Компенсируем padding родителя */
+    background: rgba(218, 165, 32, 0.1); /* Легкий золотистый фон */
+    border-radius: 8px 8px 0 0; /* Скругляем только верхние углы */
+}
+
+@media (max-width: 768px) {
+    .section-header {
+        padding: 8px 12px;
+    }
+}
+
+.section-header.collapsed .toggle-section {
+    transform: rotate(0deg);
+}
+
+.section-header:not(.collapsed) .toggle-section {
+    transform: rotate(180deg);
 }
