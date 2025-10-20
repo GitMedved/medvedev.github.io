@@ -1,76 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
 
-/***
-    The new CSS reset - version 1.7.3 (last updated 7.8.2022)
-    GitHub page: https://github.com/elad2412/the-new-css-reset
-***/
 
-/*
-    Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
-    - The "symbol *" part is to solve Firefox SVG sprite bug
-*/
 *:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
     all: unset;
     display: revert;
 }
 
-/* Preferred box-sizing value */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
-/* Reapply the pointer cursor for anchor tags */
 a, button {
     cursor: revert;
 }
 
-/* Remove list styles (bullets/numbers) */
 ol, ul, menu {
     list-style: none;
 }
 
-/* For images to not be able to exceed their container */
 img {
     max-width: 100%;
 }
 
-/* Removes spacing between cells in tables */
 table {
     border-collapse: collapse;
 }
 
-/* Safari - solving issue when using user-select:none on the <body> text input doesn't work */
 input, textarea {
     -webkit-user-select: auto;
 }
 
-/* Revert the 'white-space' property for textarea elements on Safari */
 textarea {
     white-space: revert;
 }
 
-/* Minimum style to allow styling meter element */
 meter {
     -webkit-appearance: revert;
     appearance: revert;
 }
 
-/* Reset default text opacity of input placeholder */
 ::placeholder {
     color: unset;
 }
 
-/* Fix the feature of 'hidden' attribute.
-   display:revert; revert to element instead of attribute */
 :where([hidden]) {
     display: none;
 }
 
-/* Revert for bug in Chromium browsers
-   - Fix for the content editable attribute will work properly.
-   - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element */
 :where([contenteditable]:not([contenteditable="false"])) {
     -moz-user-modify: read-write;
     -webkit-user-modify: read-write;
@@ -79,12 +57,10 @@ meter {
     -webkit-user-select: auto;
 }
 
-/* Apply back the draggable feature - exist only in Chromium and Safari */
 :where([draggable="true"]) {
     -webkit-user-drag: element;
 }
 
-/* Global Styles */
 body {
     font-family: 'Roboto', sans-serif;
     color: #333131;
@@ -102,14 +78,12 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Main Container */
 .main {
     margin: auto;
     max-width: 47.5rem;
     padding: 0 1rem;
 }
 
-/* Header */
 .header {
     display: flex;
     justify-content: flex-end;
@@ -120,7 +94,6 @@ a:hover {
     margin-left: 3px;
 }
 
-/* Content Hello Section */
 .content__hello {
     display: flex;
     margin-top: 4.2rem;
@@ -131,10 +104,12 @@ a:hover {
 
 .content__hello-img {
     width: 242px;
-    height: 242px;
+    height: auto;
     min-width: 242px;
     border-radius: 50%;
     border: 3px solid goldenrod;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 
 .content__hello-text {
@@ -155,14 +130,13 @@ a:hover {
     letter-spacing: 0.03em;
 }
 
-/* Stack Section */
 .content__stack {
     display: flex;
     gap: 50px;
     max-width: 36rem;
     font-size: 20px;
     padding-top: 3px;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    flex-wrap: wrap;
 }
 
 .stack-item {
@@ -179,13 +153,12 @@ a:hover {
     height: 24px;  
 }
 
-/* Social Icons */
 .content__social {
     display: flex;
     max-width: 36rem;
     font-size: 18px;
     padding-top: 5px;
-    gap: 15px; /* Add gap between social items */
+    gap: 15px;
 }
 
 .content__social-item {
@@ -199,7 +172,6 @@ a:hover {
     margin-right: 4px;
 }
 
-/* About Header */
 .content__about-header {
     font-size: 1.4rem;
     margin-bottom: 0.01rem;
@@ -208,14 +180,12 @@ a:hover {
     color: darkgoldenrod;
 }
 
-/* Subheader */
 .content__subheader {
     font-size: 1.4rem;
     line-height: 4rem;
     text-transform: uppercase;
 }
 
-/* Main Content Items */
 .content__main-item {
     display: flex;
     line-height: 1.8rem;
@@ -257,7 +227,6 @@ a:hover {
     font-weight: 400;
 }
 
-/* Posts */
 .post .main-item__title {
     font-size: 1.48rem;
     line-height: 2rem;
@@ -283,7 +252,6 @@ a:hover {
     margin-bottom: 0.8rem;
 }
 
-/* Footer */
 .footer {
     margin-top: 2rem;
     display: flex;
@@ -296,14 +264,12 @@ a:hover {
     margin-right: 4px;
 }
 
-/* Badge */
 .badge {
     vertical-align: middle;
     width: 200px !important;
     height: auto !important;
 }
 
-/* Custom Background */
 .custom-background {
     background-image: url('assets/img/block.png');
     background-size: cover;
@@ -320,8 +286,7 @@ a:hover {
     margin-bottom: 0;
 }
 
-/* ===== Анимации ===== */
-/* Плавное появление при загрузке */
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -332,12 +297,12 @@ a:hover {
     animation: fadeIn 1s ease forwards;
   }
   
-  /* Задержки для последовательного появления */
+ 
   .delay-1 { animation-delay: 0.3s; }
   .delay-2 { animation-delay: 0.6s; }
   .delay-3 { animation-delay: 0.9s; }
   
-  /* Эффекты при наведении */
+
   .content__social-item, .stack-item, .project, .post {
     transition: all 0.3s ease;
   }
@@ -352,7 +317,7 @@ a:hover {
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   }
   
-  /* Анимация для кнопок */
+
   .main-item__links a {
     position: relative;
     transition: all 0.3s;
@@ -378,7 +343,7 @@ a:hover {
     transform: scaleX(1);
   }
   
-  /* Анимация аватара */
+
   .content__hello-img {
     transition: all 0.5s ease;
   }
@@ -388,7 +353,6 @@ a:hover {
     box-shadow: 0 0 20px rgba(218,165,32,0.5);
   }
 
-/* Стили для сворачиваемых секций */
 .section-content {
     padding: 15px;
     transition: all 0.3s ease;
@@ -415,20 +379,20 @@ a:hover {
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-left: auto; /* Сдвигаем к правому краю */
-    flex-shrink: 0; /* Запрещаем сжатие */
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
 .section-header {
     display: flex;
-    justify-content: space-between; /* Распределяем пространство между текстом и кнопкой */
+    justify-content: space-between; 
     align-items: center;
     cursor: pointer;
     user-select: none;
-    padding: 10px 15px; /* Добавляем отступы */
-    margin: 0 -15px; /* Компенсируем padding родителя */
-    background: rgba(218, 165, 32, 0.1); /* Легкий золотистый фон */
-    border-radius: 8px 8px 0 0; /* Скругляем только верхние углы */
+    padding: 10px 15px;
+    margin: 0 -15px;
+    background: rgba(218, 165, 32, 0.1);
+    border-radius: 8px 8px 0 0;
 }
 
 @media (max-width: 768px) {
