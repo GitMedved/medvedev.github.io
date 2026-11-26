@@ -99,7 +99,7 @@ h1.content__description { font-size: clamp(2.1rem, 5vw, 4.3rem); letter-spacing:
 p.content__description { margin-top: .85rem; color: var(--muted); font-size: clamp(1rem, 2vw, 1.35rem); }
 .content__social { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.65rem; }
 .content__social-item, .main-item__links a, .footer__social-item { background: var(--surface); }
-.content__social img, .footer img { width: 21px; height: 21px; object-fit: contain; }
+.content__social img, .footer img { width: 21px; height: 21px; object-fit: contain; filter: invert(1); }
 
 .content__main { display: grid; gap: 1rem; margin-top: clamp(1.8rem, 5vw, 3.8rem); }
 
