@@ -2,285 +2,336 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#12121a">
     <title>Evgenii Medvedev QA-portfolio ©</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="quest.css">
+    <script src="quest-levels.js" defer></script>
+    <script src="quest-engine.js" defer></script>
+    <script src="quest-render.js" defer></script>
+    <script src="quest.js" defer></script>
 </head>
 <body>
     <div class="main">
         <!-- Header Section -->
-        <div class="header">
-            <a href="index.html"><span>EN</span></a>
-            <span>|</span>
-            <a href="index_ru.html"><span>RU</span></a>
-        </div>
+        <header class="site-header">
+            <a class="wordmark" href="#portfolio" data-home>
+                <span class="wordmark-icon" aria-hidden="true"></span>
+                <span>QA QUEST</span>
+            </a>
+            <nav class="view-nav" aria-label="Portfolio mode">
+                <a href="#game" data-view="game" hidden>Game</a>
+                <a href="#portfolio" data-view="portfolio">Portfolio</a>
+            </nav>
+            <nav class="language-nav" aria-label="Language">
+                <a href="index.html" lang="en" hreflang="en" aria-current="page"><span>EN</span></a>
+                <a href="index_ru.html" lang="ru" hreflang="ru"><span>RU</span></a>
+            </nav>
+        </header>
 
         <!-- Content Section -->
-        <div class="content">
-            <!-- Hello Section -->
-            <div class="content__hello fade-in">
-                <img class="content__hello-img" src="assets/img/avatar.jpg" alt="Avatar">
-                <div class="content__hello-text delay-1">
-                    <span class="content__description"><br>Hey, I'm Evgenii, QA-engineer.</span>
-                    <span class="content__description"><br>This is my portfolio</span>
-                    <nav class="content__social">
-                        <a href="https://wa.me/+79005698906" target="_blank" class="content__social-item">
-                            <img src="assets/img/icons/whatsapp.svg" alt="Whatsapp">
-                            <span>Whatsapp</span>
-                        </a>
-                        <a href="https://t.me/unqle_bear" target="_blank" class="content__social-item">
-                            <img src="assets/img/icons/telegram.svg" alt="Telegram">
-                            <span>Telegram</span>
-                        </a>
-                    </nav>
+        <main class="content">
+            <section class="quest" id="game" aria-labelledby="quest-title" hidden>
+                <div class="quest-heading">
+                    <div>
+                        <h1 id="quest-title">QA <span>QUEST</span></h1>
+                        <p>Jump over bugs and collect my portfolio one piece at a time.</p>
+                    </div>
+                    <a class="quest-profile" href="#about">
+                        <img src="assets/img/avatar-portfolio.webp" alt="" width="48" height="48">
+                        <span><strong>Evgenii Medvedev</strong><small>Manual QA Engineer</small></span>
+                    </a>
                 </div>
-            </div>
 
-            <!-- Main Content -->
-            <div class="content__main">
-                <!-- About Me Section -->
-                <div class="custom-background">
-                    <h1 class="section-header collapsed">
-                        <span class="content__about-header">About me</span>
-                        <button class="toggle-section">+</button>
-                    </h1>
-                    <div class="section-content collapsed">
-                        <div class="content__main-item">
-                            <div class="main-item__description">
-                                <p>I am currently working as a Manual QA Engineer, performing end-to-end testing of a web application and a Telegram ecosystem (a bot and a mini-app). My responsibilities cover the full testing lifecycle: designing test cases, executing functional and regression testing, and reporting bugs. Alongside my professional work, I am advancing my skills at "School 21," where I am deepening my QA expertise and mastering test automation with Java. My journey in IT began with self-studying programming, which I later complemented by completing a software testing course. My previous background in HR, where I was responsible for document control and compliance, helped me develop a keen attention to detail and systematic analytical thinking, which provides a solid foundation for a career in QA.</p>
+                <div class="quest-layout">
+                    <section class="game-window" aria-labelledby="chapter-title">
+                        <div class="window-bar">
+                            <p class="chapter-label" data-chapter-label>Chapter 01 / 03</p>
+                            <h2 id="chapter-title" data-level-name>Testing Lab</h2>
+                            <button class="pause-button" data-pause type="button" hidden>Pause</button>
+                        </div>
+                        <div class="stage" data-stage tabindex="0" role="region" aria-label="Game stage" aria-describedby="control-hint">
+                            <canvas data-canvas width="960" height="540" aria-hidden="true"></canvas>
+                            <div class="stage-overlay" data-overlay>
+                                <div class="start-card">
+                                    <h3 data-overlay-title>Testing Lab</h3>
+                                    <p data-overlay-text>Collect four skills and a portfolio file, then reach the exit.</p>
+                                    <button class="quest-button primary" data-play type="button">Play</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        <div class="control-bar" id="control-hint">
+                            <div class="key-guide">
+                                <span><kbd>←</kbd> <kbd>→</kbd> / <kbd>A</kbd> <kbd>D</kbd> Move</span>
+                                <span><kbd>Space</kbd> / <kbd>↑</kbd> Jump</span>
+                            </div>
+                            <div class="touch-guide">
+                                <button type="button" data-touch="left" aria-label="Move left">←</button>
+                                <button type="button" data-touch="right" aria-label="Move right">→</button>
+                                <button type="button" class="touch-jump" data-touch="jump">Jump ↑</button>
+                            </div>
+                            <p class="game-status" data-status role="status">Jump over bugs and gaps in the platforms.</p>
+                        </div>
+                    </section>
 
-                <!-- Stack & Languages Section -->
-                <div class="custom-background">
-                    <h1 class="section-header collapsed">
-                        <span class="content__about-header">Stack & Languages</span>
-                        <button class="toggle-section">+</button>
-                    </h1>
-                    <div class="section-content collapsed">
-                        <nav class="content__stack">
-                            <div class="stack-item">
-                                <img src="assets/img/icons/git.svg" alt="Git">
-                                <span>Git</span>
+                    <aside class="chapter-panel" aria-labelledby="journal-title">
+                        <div class="panel-heading">
+                            <h2 id="journal-title">Chapters</h2>
+                            <span data-count aria-hidden="true">0 / 3</span>
+                        </div>
+                        <progress data-progress value="0" max="3" aria-label="Completed chapters"></progress>
+                        <ol class="chapter-list">
+                            <li>
+                                <button class="chapter-button" type="button" data-chapter="0" disabled>
+                                    <span class="chapter-number" aria-hidden="true">01</span>
+                                    <span class="chapter-copy"><strong>Testing Lab</strong><small>About me</small></span>
+                                    <span class="chapter-state" data-chapter-state></span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="chapter-button" type="button" data-chapter="1" disabled>
+                                    <span class="chapter-number" aria-hidden="true">02</span>
+                                    <span class="chapter-copy"><strong>Web Depot</strong><small>eBay project</small></span>
+                                    <span class="chapter-state" data-chapter-state></span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="chapter-button" type="button" data-chapter="2" disabled>
+                                    <span class="chapter-number" aria-hidden="true">03</span>
+                                    <span class="chapter-copy"><strong>API Station</strong><small>QA Playground</small></span>
+                                    <span class="chapter-state" data-chapter-state></span>
+                                </button>
+                            </li>
+                        </ol>
+                        <div class="inventory">
+                            <div class="panel-heading">
+                                <h3>Chapter inventory</h3>
+                                <span data-inventory-count>0 / 5</span>
                             </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/github.svg" alt="GitHub">
-                                <span>GitHub</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/googlechrome.svg" alt="DevTools">
-                                <span>DevTools</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/mysql.svg" alt="My_SQL">
-                                <span>My_SQL</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/sql.svg" alt="SQL">
-                                <span>SQL</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/vscode.svg" alt="VS Code">
-                                <span>Visual Studio Code</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/pycharm.svg" alt="Pycharm">
-                                <span>Pycharm</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/python.svg" alt="Python">
-                                <span>Python</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/selenium.svg" alt="Selenium">
-                                <span>Selenium</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/postman.svg" alt="Postman">
-                                <span>Postman</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/swagger.svg" alt="Swagger">
-                                <span>Swagger</span>
-                            </div>
-                            <div class="stack-item">
-                                <img src="assets/img/icons/atlassian-jira.svg" alt="Jira">
-                                <span>Jira</span>
-                            </div>
+                            <ul class="inventory-list" data-inventory></ul>
+                        </div>
+                        <button class="quest-button quiet" data-reset type="button" hidden>Start over</button>
+                    </aside>
+                </div>
+            </section>
+
+            <section class="portfolio-view" id="portfolio" aria-labelledby="portfolio-title">
+                <!-- Hello Section -->
+                <div class="content__hello">
+                    <img class="content__hello-img" src="assets/img/avatar-portfolio.webp" alt="Avatar">
+                    <div class="content__hello-text">
+                        <h1 id="portfolio-title" class="content__description">Hey, I'm Evgenii, QA-engineer.</h1>
+                        <p class="content__description">This is my portfolio</p>
+                        <nav class="content__social">
+                            <a href="https://wa.me/+79005698906" target="_blank" rel="noopener noreferrer" class="content__social-item">
+                                <img src="assets/img/icons/whatsapp.svg" alt="Whatsapp">
+                                <span>Whatsapp</span>
+                            </a>
+                            <a href="https://t.me/unqle_bear" target="_blank" rel="noopener noreferrer" class="content__social-item">
+                                <img src="assets/img/icons/telegram.svg" alt="Telegram">
+                                <span>Telegram</span>
+                            </a>
                         </nav>
                     </div>
                 </div>
 
-                <!-- Education Section -->
-                <div class="custom-background">
-                    <h1 class="section-header collapsed">
-                        <span class="content__about-header">Education</span>
-                        <button class="toggle-section">+</button>
-                    </h1>
-                    <div class="section-content collapsed">
-                        <h2 class="content__subheader">Higher education</h2>
-                        <div class="content__main-item">
-                            <div class="main-item__description">
-                                <p>2012 Immanuel Kant Baltic Federal University</p>
-                                <p>Faculty of Law, Jurisprudence (Lawyer)</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Professional Development Section -->
-                <div class="custom-background">   
-                    <h1 class="section-header collapsed">
-                        <span class="content__about-header">Professional development, courses</span>
-                        <button class="toggle-section">+</button>
-                    </h1>
-                    <div class="section-content collapsed">
-                        <div class="content__main-item">
-                            <div class="main-item__description">
-                                <p>2025 Stepik Software Testing from scratch. Theory + Practice</p>
-                                <a href="https://stepik.org/cert/2743498?lang=en" target="_blank" class="content__social-item"><span>Certificate</span></a>
-                            </div>
-                        </div>
-                        <div class="content__main-item">
-                            <div class="main-item__description">
-                                <p>2025 Stepik Selenium in Python</p>
-                                <a href="https://stepik.org/cert/2790637?lang=en" target="_blank" class="content__social-item"><span>Certificate</span></a>
-                            </div>
-                        </div>
-                        <div class="content__main-item">
-                            <div class="main-item__description">
-                                <p>2025 Stepik Jira: managing tasks on electronic boards</p>
-                                <a href="https://stepik.org/cert/2804940?lang=en" target="_blank" class="content__social-item"><span>Certificate</span></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Projects Section -->
-                <div class="custom-background fade-in delay-3"> 
-                    <h1 class="section-header collapsed">
-                        <span class="content__about-header">Projects</span>
-                        <button class="toggle-section">+</button>
-                    </h1>
-                    <div class="section-content collapsed">
-                        <div class="content__main-item project">
-                            <p data-fslightbox href="assets/img/project.png">
-                                <img src="assets/img/project.png" alt="project1">
+                <!-- Main Content -->
+                <div class="content__main">
+                    <!-- Projects Section -->
+                    <section class="custom-background projects" id="projects">
+                        <h2 class="section-header">Projects</h2>
+                        <div class="section-content">
+                            <article class="content__main-item project" id="project-ebay">
+                                <a class="project-preview" href="assets/img/project.png"><img src="assets/img/project.png" alt="project1"></a>
                                 <div>
-                                    <div class="main-item__title">
-                                        <p>Project 1</p><p>Testing eBay</p>
-                                    </div>
+                                    <p class="project-label">Project 1</p>
+                                    <h3 class="main-item__title">Testing eBay</h3>
                                     <div class="main-item__description">
                                         <p>This project involves testing the core functionalities of the eBay.com website.</p>
                                     </div>
-                                    <div class="main-item__subdescription">
-                                        <p class="main-item__links">
-                                            <a href="assets/Project 1 (ebay)/1. Test_plan.pdf" target="_blank"><span>Test-plan</span></a>
-                                            <span>|</span>
-                                            <a href="assets/Project 1 (ebay)/2. Test_cases.pdf"><span>Test cases</span></a>
-                                            <div>
-                                                <a href="assets/Project 1 (ebay)/3. Bug_reports.pdf"><span>Bug reports</span></a>
-                                                <span>|</span>
-                                                <a href="assets/Project 1 (ebay)/4. Test_report.pdf"><span>Test report</span></a>
-                                                <div>
-                                                    <a href="assets/Project 1 (ebay)/Project_1 (Test cases 3).py" 
-                                                    download="AutoTests_eBay_Selenium.py"
-                                                    target="_blank"
-                                                    onclick="alert('If the file doesn\'t download automatically, press Ctrl+S to save it.')">
-                                                    <span>AutoTests (Python framework for Selenium)</span>
-                                                    </a>
-                                                </div>  
-                                            </div>
-                                        </p>
+                                    <div class="main-item__links">
+                                        <a href="assets/Project 1 (ebay)/1. Test_plan.pdf" target="_blank" rel="noopener noreferrer"><span>Test-plan</span></a>
+                                        <a href="assets/Project 1 (ebay)/2. Test_cases.pdf"><span>Test cases</span></a>
+                                        <a href="assets/Project 1 (ebay)/3. Bug_reports.pdf"><span>Bug reports</span></a>
+                                        <a href="assets/Project 1 (ebay)/4. Test_report.pdf"><span>Test report</span></a>
+                                        <a href="assets/Project 1 (ebay)/Project_1 (Test cases 3).py" download="AutoTests_eBay_Selenium.py" target="_blank" rel="noopener noreferrer"> <span>AutoTests (Python framework for Selenium)</span> </a>
                                     </div>
                                 </div>
-                            </p>
-                        </div>
-                        <div class="content__main-item project">
-                            <p data-fslightbox href="assets/img/project2.png">
-                                <img src="assets/img/project2.png" alt="project2">
+                            </article>
+                            <article class="content__main-item project" id="project-api">
+                                <a class="project-preview" href="assets/img/project2.png"><img src="assets/img/project2.png" alt="project2"></a>
                                 <div>
-                                    <div class="main-item__title">
-                                        <p>Project 2</p><p>API test QA Playground</p>
-                                    </div>
+                                    <p class="project-label">Project 2</p>
+                                    <h3 class="main-item__title">API test QA Playground</h3>
                                     <div class="main-item__description">
                                         <p>This project contains documentation and test collections created while completing tasks on the QA Playground training platform.</p>
                                     </div>
-                                    <div class="main-item__subdescription">
-                                        <p class="main-item__links">
-                                            <a href="assets/Project 2 (API test QA Playground)/README.pdf" target="_blank"><span>About project</span></a>
-                                            <div>
-                                            <a href="assets/Project 2 (API test QA Playground)/QA Playground.postman_collection.json" 
-                                            download="QA Playground.postman_collection.json"
-                                            target="_blank">
-                                            <span>Colection</span>
-                                            </a>
-                                            <span>|</span>
-                                            <a href="assets/Project 2 (API test QA Playground)/Dev.postman_environment.json" 
-                                            download="Dev.postman_environment.json"
-                                            target="_blank">
-                                            <span>Dev environment</span>
-                                            </a>
-                                            <span>|</span>
-                                            <a href="assets/Project 2 (API test QA Playground)/Release.postman_environment.json" 
-                                            download="Release.postman_environment.json"
-                                            target="_blank">
-                                            <span>Release environment</span>
-                                            </a>
-                                            <div>
-                                            <a href="assets/Project 2 (API test QA Playground)/API_Bug_reports.xlsx" target="_blank"><span>Bug reports</span></a>
-                                                </div>  
-                                            </div>
-                                        </p>
+                                    <div class="main-item__links">
+                                        <a href="assets/Project 2 (API test QA Playground)/README.pdf" target="_blank" rel="noopener noreferrer"><span>About project</span></a>
+                                        <a href="assets/Project 2 (API test QA Playground)/QA Playground.postman_collection.json" download="QA Playground.postman_collection.json" target="_blank" rel="noopener noreferrer"> <span>Colection</span> </a>
+                                        <a href="assets/Project 2 (API test QA Playground)/Dev.postman_environment.json" download="Dev.postman_environment.json" target="_blank" rel="noopener noreferrer"> <span>Dev environment</span> </a>
+                                        <a href="assets/Project 2 (API test QA Playground)/Release.postman_environment.json" download="Release.postman_environment.json" target="_blank" rel="noopener noreferrer"> <span>Release environment</span> </a>
+                                        <a href="assets/Project 2 (API test QA Playground)/API_Bug_reports.xlsx" target="_blank" rel="noopener noreferrer"><span>Bug reports</span></a>
                                     </div>
                                 </div>
-                            </p>
+                            </article>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Posts Section -->
-                <div class="custom-background">      
-                    <h1 class="section-header collapsed">
-                        <span class="content__about-header">Posts</span>
-                        <button class="toggle-section">+</button>
-                    </h1>
-                    <div class="section-content collapsed">
-                        <article>
-                            <h2 class="main-item__title">
-                                <a href="#linktopost">Why I decided to become a QA</a>
-                            </h2>
-                            <p class="main-item__date">Mar 1, 2025</p>
-                            <div class="main-item__description">
-                                <p>I decided to become a QA because, for me, it's important not just to create something new, but to ensure that it works flawlessly. From the very beginning of my journey, I realized that quality is not just a stage in the development process, but a philosophy that requires attention to detail, patience, and a deep understanding of both the technical and user sides of a product. I enjoy being the one who guards quality, who identifies weaknesses and helps make the product better. For me, QA is not just about finding bugs; it's an opportunity to influence the final outcome so that users receive something that truly works and benefits them. I always strive to ensure that every detail is thought through and every scenario is tested. This is my way of making the world of technology a little bit better.</p>
+                    </section>
+
+                    <!-- About Me Section -->
+                    <details class="custom-background" id="about" open>
+                        <summary class="section-header">About me</summary>
+                        <div class="section-content">
+                            <div class="content__main-item">
+                                <div class="main-item__description">
+                                    <p><span data-bio-chapter="0">I am currently working as a Manual QA Engineer, performing end-to-end testing of a web application and a Telegram ecosystem (a bot and a mini-app). My responsibilities cover the full testing lifecycle: designing test cases, executing functional and regression testing, and reporting bugs.</span> <span data-bio-chapter="2">Alongside my professional work, I am advancing my skills at "School 21," where I am deepening my QA expertise and mastering test automation with Java.</span> <span data-bio-chapter="1">My journey in IT began with self-studying programming, which I later complemented by completing a software testing course. My previous background in HR, where I was responsible for document control and compliance, helped me develop a keen attention to detail and systematic analytical thinking, which provides a solid foundation for a career in QA.</span></p>
+                                </div>
                             </div>
-                        </article>
-                    </div>
+                        </div>
+                    </details>
+
+                    <!-- Stack & Languages Section -->
+                    <details class="custom-background" id="stack" open>
+                        <summary class="section-header">Stack & Languages</summary>
+                        <div class="section-content">
+                            <div class="content__stack">
+                                <div class="stack-item" data-skill="git">
+                                    <img src="assets/img/icons/git.svg" alt="Git">
+                                    <span>Git</span>
+                                </div>
+                                <div class="stack-item" data-skill="github">
+                                    <img src="assets/img/icons/github.svg" alt="GitHub">
+                                    <span>GitHub</span>
+                                </div>
+                                <div class="stack-item" data-skill="devtools">
+                                    <img src="assets/img/icons/googlechrome.svg" alt="DevTools">
+                                    <span>DevTools</span>
+                                </div>
+                                <div class="stack-item" data-skill="mysql">
+                                    <img src="assets/img/icons/mysql.svg" alt="My_SQL">
+                                    <span>My_SQL</span>
+                                </div>
+                                <div class="stack-item" data-skill="sql">
+                                    <img src="assets/img/icons/sql.svg" alt="SQL">
+                                    <span>SQL</span>
+                                </div>
+                                <div class="stack-item" data-skill="vscode">
+                                    <img src="assets/img/icons/vscode.svg" alt="VS Code">
+                                    <span>Visual Studio Code</span>
+                                </div>
+                                <div class="stack-item" data-skill="pycharm">
+                                    <img src="assets/img/icons/pycharm.svg" alt="Pycharm">
+                                    <span>Pycharm</span>
+                                </div>
+                                <div class="stack-item" data-skill="python">
+                                    <img src="assets/img/icons/python.svg" alt="Python">
+                                    <span>Python</span>
+                                </div>
+                                <div class="stack-item" data-skill="selenium">
+                                    <img src="assets/img/icons/selenium.svg" alt="Selenium">
+                                    <span>Selenium</span>
+                                </div>
+                                <div class="stack-item" data-skill="postman">
+                                    <img src="assets/img/icons/postman.svg" alt="Postman">
+                                    <span>Postman</span>
+                                </div>
+                                <div class="stack-item" data-skill="swagger">
+                                    <img src="assets/img/icons/swagger.svg" alt="Swagger">
+                                    <span>Swagger</span>
+                                </div>
+                                <div class="stack-item" data-skill="jira">
+                                    <img src="assets/img/icons/atlassian-jira.svg" alt="Jira">
+                                    <span>Jira</span>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Education Section -->
+                    <details class="custom-background" id="education">
+                        <summary class="section-header">Education</summary>
+                        <div class="section-content">
+                            <h2 class="content__subheader">Higher education</h2>
+                            <div class="content__main-item">
+                                <div class="main-item__description">
+                                    <p>2012 Immanuel Kant Baltic Federal University</p>
+                                    <p>Faculty of Law, Jurisprudence (Lawyer)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Professional Development Section -->
+                    <details class="custom-background" id="courses">
+                        <summary class="section-header">Professional development, courses</summary>
+                        <div class="section-content">
+                            <div class="content__main-item">
+                                <div class="main-item__description">
+                                    <p>2025 Stepik Software Testing from scratch. Theory + Practice</p>
+                                    <a href="https://stepik.org/cert/2743498?lang=en" target="_blank" rel="noopener noreferrer" class="content__social-item"><span>Certificate</span></a>
+                                </div>
+                            </div>
+                            <div class="content__main-item">
+                                <div class="main-item__description">
+                                    <p>2025 Stepik Selenium in Python</p>
+                                    <a href="https://stepik.org/cert/2790637?lang=en" target="_blank" rel="noopener noreferrer" class="content__social-item"><span>Certificate</span></a>
+                                </div>
+                            </div>
+                            <div class="content__main-item">
+                                <div class="main-item__description">
+                                    <p>2025 Stepik Jira: managing tasks on electronic boards</p>
+                                    <a href="https://stepik.org/cert/2804940?lang=en" target="_blank" rel="noopener noreferrer" class="content__social-item"><span>Certificate</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+
+                    <!-- Posts Section -->
+                    <details class="custom-background" id="posts">
+                        <summary class="section-header">Posts</summary>
+                        <div class="section-content">
+                            <article id="linktopost">
+                                <h2 class="main-item__title">
+                                    <a href="#linktopost">Why I decided to become a QA</a>
+                                </h2>
+                                <p class="main-item__date">Mar 1, 2025</p>
+                                <div class="main-item__description">
+                                    <p>I decided to become a QA because, for me, it's important not just to create something new, but to ensure that it works flawlessly. From the very beginning of my journey, I realized that quality is not just a stage in the development process, but a philosophy that requires attention to detail, patience, and a deep understanding of both the technical and user sides of a product. I enjoy being the one who guards quality, who identifies weaknesses and helps make the product better. For me, QA is not just about finding bugs; it's an opportunity to influence the final outcome so that users receive something that truly works and benefits them. I always strive to ensure that every detail is thought through and every scenario is tested. This is my way of making the world of technology a little bit better.</p>
+                                </div>
+                            </article>
+                        </div>
+                    </details>
                 </div>
-            </div>
-        </div>
-        
+            </section>
+        </main>
+
         <!-- Footer Section -->
-        <div class="footer">
+        <footer class="footer">
             <div>
                 <span>© Evgenii Medvedev</span>
             </div>
             <div>
                 <nav class="footer__social">
-                    <a href="https://wa.me/+79005698906" target="_blank" class="footer__social-item">
+                    <a href="https://wa.me/+79005698906" target="_blank" rel="noopener noreferrer" class="footer__social-item">
                         <img src="assets/img/icons/whatsapp.svg" alt="Whatsapp">
                     </a>
-                    <a href="https://t.me/unqle_bear" target="_blank" class="footer__social-item">
+                    <a href="https://t.me/unqle_bear" target="_blank" rel="noopener noreferrer" class="footer__social-item">
                         <img src="assets/img/icons/telegram.svg" alt="Telegram">
                     </a>
                 </nav>
             </div>
-        </div>
+        </footer>
     </div>
-    
-    <!-- Scripts -->
-    <script src="assets/scripts/fslightbox.js"></script>
-    <script src="scripts.js"></script>
+
+
+    <dialog class="quest-dialog" id="quest-dialog" aria-labelledby="quest-dialog-title">
+        <div class="dialog-bar">
+            <p data-dialog-context></p>
+            <button class="close-dialog" type="button" aria-label="Close" data-close>×</button>
+        </div>
+        <div class="dialog-body" data-dialog-body></div>
+    </dialog>
 </body>
 </html>
