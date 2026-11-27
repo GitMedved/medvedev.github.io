@@ -7,7 +7,9 @@
     <title>Evgenii Medvedev QA-portfolio ©</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="quest.css">
-    <script src="quest-missions.js" defer></script>
+    <script src="quest-levels.js" defer></script>
+    <script src="quest-engine.js" defer></script>
+    <script src="quest-render.js" defer></script>
     <script src="quest.js" defer></script>
 </head>
 <body>
@@ -34,7 +36,7 @@
                 <div class="quest-heading">
                     <div>
                         <h1 id="quest-title">QA <span>QUEST</span></h1>
-                        <p>Run three checks to unlock my QA skills and projects.</p>
+                        <p>Jump over bugs and collect my portfolio one piece at a time.</p>
                     </div>
                     <a class="quest-profile" href="#about">
                         <img src="assets/img/avatar-portfolio.webp" alt="" width="48" height="48">
@@ -43,87 +45,73 @@
                 </div>
 
                 <div class="quest-layout">
-                    <section class="game-window" aria-labelledby="lab-title">
+                    <section class="game-window" aria-labelledby="chapter-title">
                         <div class="window-bar">
-                            <span class="window-lights" aria-hidden="true"></span>
-                            <h2 id="lab-title">Test lab</h2>
-                            <span class="window-mode">Simulation</span>
+                            <p class="chapter-label" data-chapter-label>Chapter 01 / 03</p>
+                            <h2 id="chapter-title" data-level-name>Testing Lab</h2>
+                            <button class="pause-button" data-pause type="button" hidden>Pause</button>
                         </div>
-                        <div class="world" data-world role="region" aria-label="Test lab map" aria-describedby="control-hint" tabindex="0">
-                            <img class="world-image" src="assets/img/qa-lab.webp" alt="" width="1600" height="900" fetchpriority="high">
-                            <div class="world-scan" aria-hidden="true"></div>
-                            <button class="station" type="button" data-station="0" disabled>
-                                <span class="station-number" aria-hidden="true">01</span>
-                                <span class="station-name">Diagnostics</span>
-                            </button>
-                            <button class="station" type="button" data-station="1" disabled>
-                                <span class="station-number" aria-hidden="true">02</span>
-                                <span class="station-name">Web testing</span>
-                            </button>
-                            <button class="station" type="button" data-station="2" disabled>
-                                <span class="station-number" aria-hidden="true">03</span>
-                                <span class="station-name">API terminal</span>
-                            </button>
-                            <div class="rover" data-rover aria-hidden="true">
-                                <div class="rover-shadow"></div>
-                                <div class="rover-body">
-                                    <i class="rover-antenna"></i>
-                                    <i class="rover-lens"></i>
-                                    <i class="rover-light"></i>
+                        <div class="stage" data-stage tabindex="0" role="region" aria-label="Game stage" aria-describedby="control-hint">
+                            <canvas data-canvas width="960" height="540" aria-hidden="true"></canvas>
+                            <div class="stage-overlay" data-overlay>
+                                <div class="start-card">
+                                    <h3 data-overlay-title>Testing Lab</h3>
+                                    <p data-overlay-text>Collect four skills and a portfolio file, then reach the exit.</p>
+                                    <button class="quest-button primary" data-play type="button">Play</button>
                                 </div>
                             </div>
                         </div>
                         <div class="control-bar" id="control-hint">
-                            <p class="key-guide"><kbd>WASD</kbd> <kbd>↑↓←→</kbd> Move</p>
-                            <p class="key-guide"><kbd>E</kbd> Interact</p>
-                            <p class="pointer-guide">Tap the floor to move or a station to interact.</p>
-                            <p class="map-hint" data-world-hint aria-live="polite">Click a station, or move to it and press E.</p>
+                            <div class="key-guide">
+                                <span><kbd>←</kbd> <kbd>→</kbd> / <kbd>A</kbd> <kbd>D</kbd> Move</span>
+                                <span><kbd>Space</kbd> / <kbd>↑</kbd> Jump</span>
+                            </div>
+                            <div class="touch-guide">
+                                <button type="button" data-touch="left" aria-label="Move left">←</button>
+                                <button type="button" data-touch="right" aria-label="Move right">→</button>
+                                <button type="button" class="touch-jump" data-touch="jump">Jump ↑</button>
+                            </div>
+                            <p class="game-status" data-status role="status">Jump over bugs and gaps in the platforms.</p>
                         </div>
                     </section>
 
-                    <aside class="mission-panel" aria-labelledby="mission-title">
-                        <div class="mission-header">
-                            <h2 id="mission-title">Mission log</h2>
+                    <aside class="chapter-panel" aria-labelledby="journal-title">
+                        <div class="panel-heading">
+                            <h2 id="journal-title">Chapters</h2>
                             <span data-count aria-hidden="true">0 / 3</span>
                         </div>
-                        <progress data-progress value="0" max="3" aria-label="Completed missions"></progress>
-                        <ol class="mission-list">
+                        <progress data-progress value="0" max="3" aria-label="Completed chapters"></progress>
+                        <ol class="chapter-list">
                             <li>
-                                <button class="mission" type="button" data-mission="0" disabled>
-                                    <span class="mission-number" aria-hidden="true">01</span>
-                                    <span class="mission-copy">
-                                        <strong>Diagnostics</strong>
-                                        <span>Skills & tools</span>
-                                    </span>
-                                    <span class="mission-state"></span>
+                                <button class="chapter-button" type="button" data-chapter="0" disabled>
+                                    <span class="chapter-number" aria-hidden="true">01</span>
+                                    <span class="chapter-copy"><strong>Testing Lab</strong><small>About me</small></span>
+                                    <span class="chapter-state" data-chapter-state></span>
                                 </button>
                             </li>
                             <li>
-                                <button class="mission" type="button" data-mission="1" disabled>
-                                    <span class="mission-number" aria-hidden="true">02</span>
-                                    <span class="mission-copy">
-                                        <strong>Web testing</strong>
-                                        <span>eBay project</span>
-                                    </span>
-                                    <span class="mission-state"></span>
+                                <button class="chapter-button" type="button" data-chapter="1" disabled>
+                                    <span class="chapter-number" aria-hidden="true">02</span>
+                                    <span class="chapter-copy"><strong>Web Depot</strong><small>eBay project</small></span>
+                                    <span class="chapter-state" data-chapter-state></span>
                                 </button>
                             </li>
                             <li>
-                                <button class="mission" type="button" data-mission="2" disabled>
-                                    <span class="mission-number" aria-hidden="true">03</span>
-                                    <span class="mission-copy">
-                                        <strong>API terminal</strong>
-                                        <span>QA Playground project</span>
-                                    </span>
-                                    <span class="mission-state"></span>
+                                <button class="chapter-button" type="button" data-chapter="2" disabled>
+                                    <span class="chapter-number" aria-hidden="true">03</span>
+                                    <span class="chapter-copy"><strong>API Station</strong><small>QA Playground</small></span>
+                                    <span class="chapter-state" data-chapter-state></span>
                                 </button>
                             </li>
                         </ol>
-                        <div class="mission-actions">
-                            <button class="quest-button primary" type="button" data-next>Start diagnostics</button>
-                            <button class="quest-button quiet" type="button" data-reset hidden>Reset progress</button>
-                            <p class="save-state" data-save-state role="status" hidden></p>
+                        <div class="inventory">
+                            <div class="panel-heading">
+                                <h3>Chapter inventory</h3>
+                                <span data-inventory-count>0 / 5</span>
+                            </div>
+                            <ul class="inventory-list" data-inventory></ul>
                         </div>
+                        <button class="quest-button quiet" data-reset type="button" hidden>Start over</button>
                     </aside>
                 </div>
             </section>
@@ -197,7 +185,7 @@
                         <div class="section-content">
                             <div class="content__main-item">
                                 <div class="main-item__description">
-                                    <p>I am currently working as a Manual QA Engineer, performing end-to-end testing of a web application and a Telegram ecosystem (a bot and a mini-app). My responsibilities cover the full testing lifecycle: designing test cases, executing functional and regression testing, and reporting bugs. Alongside my professional work, I am advancing my skills at "School 21," where I am deepening my QA expertise and mastering test automation with Java. My journey in IT began with self-studying programming, which I later complemented by completing a software testing course. My previous background in HR, where I was responsible for document control and compliance, helped me develop a keen attention to detail and systematic analytical thinking, which provides a solid foundation for a career in QA.</p>
+                                    <p><span data-bio-chapter="0">I am currently working as a Manual QA Engineer, performing end-to-end testing of a web application and a Telegram ecosystem (a bot and a mini-app). My responsibilities cover the full testing lifecycle: designing test cases, executing functional and regression testing, and reporting bugs.</span> <span data-bio-chapter="2">Alongside my professional work, I am advancing my skills at "School 21," where I am deepening my QA expertise and mastering test automation with Java.</span> <span data-bio-chapter="1">My journey in IT began with self-studying programming, which I later complemented by completing a software testing course. My previous background in HR, where I was responsible for document control and compliance, helped me develop a keen attention to detail and systematic analytical thinking, which provides a solid foundation for a career in QA.</span></p>
                                 </div>
                             </div>
                         </div>
@@ -208,51 +196,51 @@
                         <summary class="section-header">Stack & Languages</summary>
                         <div class="section-content">
                             <div class="content__stack">
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="git">
                                     <img src="assets/img/icons/git.svg" alt="Git">
                                     <span>Git</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="github">
                                     <img src="assets/img/icons/github.svg" alt="GitHub">
                                     <span>GitHub</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="devtools">
                                     <img src="assets/img/icons/googlechrome.svg" alt="DevTools">
                                     <span>DevTools</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="mysql">
                                     <img src="assets/img/icons/mysql.svg" alt="My_SQL">
                                     <span>My_SQL</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="sql">
                                     <img src="assets/img/icons/sql.svg" alt="SQL">
                                     <span>SQL</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="vscode">
                                     <img src="assets/img/icons/vscode.svg" alt="VS Code">
                                     <span>Visual Studio Code</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="pycharm">
                                     <img src="assets/img/icons/pycharm.svg" alt="Pycharm">
                                     <span>Pycharm</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="python">
                                     <img src="assets/img/icons/python.svg" alt="Python">
                                     <span>Python</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="selenium">
                                     <img src="assets/img/icons/selenium.svg" alt="Selenium">
                                     <span>Selenium</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="postman">
                                     <img src="assets/img/icons/postman.svg" alt="Postman">
                                     <span>Postman</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="swagger">
                                     <img src="assets/img/icons/swagger.svg" alt="Swagger">
                                     <span>Swagger</span>
                                 </div>
-                                <div class="stack-item">
+                                <div class="stack-item" data-skill="jira">
                                     <img src="assets/img/icons/atlassian-jira.svg" alt="Jira">
                                     <span>Jira</span>
                                 </div>

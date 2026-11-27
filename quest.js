@@ -4,71 +4,80 @@
     const game = document.querySelector("#game");
     const portfolio = document.querySelector("#portfolio");
     const dialog = document.querySelector("#quest-dialog");
+    const canvas = game.querySelector("[data-canvas]");
+    const context = canvas.getContext?.("2d");
+    if (!context || typeof dialog.showModal !== "function") return;
 
-    // The original portfolio remains readable without JavaScript or dialog support.
-    if (typeof dialog.showModal !== "function") return;
-
-    const copy = questMissions[document.documentElement.lang] ?? questMissions.en;
-    const world = game.querySelector("[data-world]");
-    const rover = game.querySelector("[data-rover]");
-    const stations = [...game.querySelectorAll("[data-station]")];
-    const missions = [...game.querySelectorAll("[data-mission]")];
-    const nextButton = game.querySelector("[data-next]");
+    const copy = questWords[document.documentElement.lang] ?? questWords.en;
+    const stage = game.querySelector("[data-stage]");
+    const overlay = game.querySelector("[data-overlay]");
+    const overlayTitle = overlay.querySelector("[data-overlay-title]");
+    const overlayText = overlay.querySelector("[data-overlay-text]");
+    const playButton = game.querySelector("[data-play]");
+    const pauseButton = game.querySelector("[data-pause]");
     const resetButton = game.querySelector("[data-reset]");
-    const saveState = game.querySelector("[data-save-state]");
+    const status = game.querySelector("[data-status]");
+    const chapterID = game.querySelector("[data-chapter-label]");
+    const levelName = game.querySelector("[data-level-name]");
+    const chapterCount = game.querySelector("[data-count]");
     const progressBar = game.querySelector("[data-progress]");
-    const completedCount = game.querySelector("[data-count]");
-    const worldHint = game.querySelector("[data-world-hint]");
-    const dialogContext = dialog.querySelector("[data-dialog-context]");
-    const dialogBody = dialog.querySelector("[data-dialog-body]");
+    const chapters = [...game.querySelectorAll("[data-chapter]")];
+    const inventory = game.querySelector("[data-inventory]");
+    const inventoryCount = game.querySelector("[data-inventory-count]");
     const gameLink = document.querySelector('[data-view="game"]');
     const portfolioLink = document.querySelector('[data-view="portfolio"]');
+    const homeLink = document.querySelector("[data-home]");
     const languageLinks = [...document.querySelectorAll(".language-nav a")];
+    const dialogBody = dialog.querySelector("[data-dialog-body]");
+    const dialogContext = dialog.querySelector("[data-dialog-context]");
+    const skillIcons = new Map([...portfolio.querySelectorAll("[data-skill]")].map(
+        node => [node.dataset.skill, node.querySelector("img")]
+    ));
+    const art = new Map();
+    const smallScreen = window.matchMedia("(max-width: 42rem)");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const storageKey = "qa-quest.progress.v1";
-
-    const map = { left: 8, right: 92, top: 52, bottom: 91, ratio: 16 / 9 };
-    const start = { x: 50, y: 83 };
-    const terminals = [
-        { x: 20, y: 47, reward: "#stack .content__stack", challenge: "diagnostics" },
-        { x: 50, y: 47, reward: "#project-ebay", challenge: "web" },
-        { x: 81, y: 47, reward: "#project-api", challenge: "api" },
-    ];
-    const terminalHintDistance = 8.5;
-    const speed = 62;
-    const directions = new Map([
-        ["ArrowLeft", "left"], ["KeyA", "left"],
-        ["ArrowRight", "right"], ["KeyD", "right"],
-        ["ArrowUp", "up"], ["KeyW", "up"],
-        ["ArrowDown", "down"], ["KeyS", "down"],
-    ]);
+    const storageKey = "qa-quest.platformer.v1";
+    const leftCodes = ["ArrowLeft", "KeyA"];
+    const rightCodes = ["ArrowRight", "KeyD"];
+    const jumpCodes = ["Space", "ArrowUp", "KeyW"];
+    const movementCodes = new Set([...leftCodes, ...rightCodes, ...jumpCodes]);
 
     const keys = new Set();
-    let position = { ...start };
+    const pointers = new Map();
+    let progress = readProgress();
+    let index = 0;
+    let run;
+    let phase = "ready";
+    let nextJump = false;
     let frame = 0;
-    let lastTime = 0;
-    let destination = null;
-    let nearby = -1;
-    let activeDialog = -1;
-    let returnFocus = null;
-    let saved = readProgress();
-    let completed = saved ?? 0;
+    let lastTick = 0;
+    let focusAfterDialog = null;
+
+    function cleanProgress(value) {
+        const completed = Number.isInteger(value?.completed) ?
+            Math.max(0, Math.min(value.completed, questLevels.length)) : 0;
+        const inventory = questLevels.map((level, chapter) => {
+            const found = Array.isArray(value?.inventory?.[chapter]) ? value.inventory[chapter] : [];
+            return level.pickups.map(([id]) => id).filter(id =>
+                chapter < completed || (chapter === completed && found.includes(id))
+            );
+        });
+        return { completed, inventory };
+    }
 
     function readProgress() {
         try {
-            const value = Number(localStorage.getItem(storageKey));
-            return Number.isInteger(value) && value >= 0 && value <= terminals.length ? value : 0;
+            return cleanProgress(JSON.parse(localStorage.getItem(storageKey)));
         } catch {
-            return null;
+            return cleanProgress(null);
         }
     }
 
     function saveProgress() {
         try {
-            localStorage.setItem(storageKey, String(completed));
-            saved = completed;
+            localStorage.setItem(storageKey, JSON.stringify(progress));
         } catch {
-            saved = null;
+            // The full game remains playable for this visit when storage is disabled.
         }
     }
 
@@ -86,299 +95,252 @@
         return node;
     }
 
-    function showHint(message) {
-        if (worldHint.textContent !== message) worldHint.textContent = message;
+    function link(text, className, href) {
+        const node = element("a", className, text);
+        node.href = href;
+        return node;
     }
 
-    function updateHint() {
-        if (nearby > completed) {
-            showHint(copy.lockedHint);
-        } else if (nearby >= 0) {
-            showHint(copy.nearHint);
-        } else {
-            showHint(completed === terminals.length ? copy.allDone : copy.moveHint);
+    function speak(message, kind) {
+        status.textContent = message;
+        status.dataset.notice = kind ?? "";
+    }
+
+    function requestArt(id) {
+        if (art.has(id)) return;
+        const image = new Image();
+        image.addEventListener("load", paint);
+        image.src = `assets/img/quest-${id}-side.webp`;
+        art.set(id, image);
+    }
+
+    function paint() {
+        if (run && !game.hidden) {
+            drawQuest(context, run, art.get(run.level.id), skillIcons, copy, !reducedMotion.matches);
         }
     }
 
-    function renderProgress() {
-        completedCount.textContent = `${completed} / ${terminals.length}`;
-        progressBar.value = completed;
-        terminals.forEach((_, index) => {
-            const state = index < completed ? "done" : index === completed ? "active" : "locked";
-            const label = stations[index].querySelector(".station-name").textContent;
-            stations[index].dataset.state = state;
-            stations[index].disabled = state === "locked";
-            stations[index].setAttribute("aria-label", `${label} · ${copy.states[state]}`);
-            missions[index].dataset.state = state;
-            missions[index].disabled = state === "locked";
-            missions[index].querySelector(".mission-state").textContent = copy.states[state];
+    function sizeStage() {
+        canvas.width = smallScreen.matches ? questEngine.height * 4 / 3 : questEngine.width;
+        canvas.height = questEngine.height;
+        context.imageSmoothingEnabled = false;
+        paint();
+    }
+
+    function cardIcon(id) {
+        if (id === "file") {
+            const icon = element("span", "file-icon", "▤");
+            icon.setAttribute("aria-hidden", "true");
+            return icon;
+        }
+        const icon = skillIcons.get(id).cloneNode();
+        icon.alt = "";
+        icon.removeAttribute("title");
+        return icon;
+    }
+
+    function renderInventory() {
+        inventoryCount.textContent = `${run.collected.size} / ${run.level.pickups.length}`;
+        inventory.replaceChildren(...run.level.pickups.map(([id]) => {
+            const found = run.collected.has(id);
+            const item = element("li");
+            item.dataset.collected = String(found);
+            const mark = element("span", "inventory-mark", found ? "✓" : "○");
+            mark.setAttribute("aria-label", found ? copy.unlocked : copy.locked);
+            item.append(cardIcon(id), element("span", "", id === "file" ? copy.file : questSkillNames[id]), mark);
+            return item;
+        }));
+        resetButton.hidden = progress.completed === 0 && progress.inventory.every(items => items.length === 0);
+    }
+
+    function renderChapters() {
+        chapterCount.textContent = `${progress.completed} / ${questLevels.length}`;
+        progressBar.value = progress.completed;
+        chapters.forEach((chapter, i) => {
+            const state = i < progress.completed ? "done" : i === progress.completed ? "active" : "locked";
+            chapter.dataset.state = state;
+            chapter.disabled = state === "locked";
+            if (state === "active") chapter.setAttribute("aria-current", "step");
+            else chapter.removeAttribute("aria-current");
+            chapter.querySelector("[data-chapter-state]").textContent = {
+                done: copy.unlocked, active: copy.active, locked: copy.locked,
+            }[state];
         });
-        nextButton.textContent = copy.start[completed] ?? copy.allMaterials;
-        resetButton.hidden = completed === 0;
-        saveState.hidden = completed === 0;
-        const saveMessage = saved === completed ? copy.saved : copy.sessionOnly;
-        saveState.textContent = completed === terminals.length ? `${copy.allDone} ${saveMessage}` : saveMessage;
-        updateHint();
     }
 
-    function setCoordinates(target, { x, y }) {
-        target.style.setProperty("--map-x", `${x}%`);
-        target.style.setProperty("--map-y", `${y}%`);
+    function clearControls() {
+        keys.clear();
+        pointers.clear();
+        nextJump = false;
     }
 
-    function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    function distance(x, y) {
-        return Math.hypot(x, y / map.ratio);
-    }
-
-    function placeRover(x, y) {
-        const nextX = clamp(x, map.left, map.right);
-        if (nextX !== position.x) rover.style.setProperty("--heading", nextX < position.x ? -1 : 1);
-        position = { x: nextX, y: clamp(y, map.top, map.bottom) };
-        setCoordinates(rover, position);
-
-        const near = terminals.findIndex(terminal =>
-            distance(terminal.x - position.x, terminal.y + 8 - position.y) < terminalHintDistance
-        );
-        if (near === nearby) return;
-        if (nearby >= 0) stations[nearby].removeAttribute("data-near");
-        nearby = near;
-        if (nearby >= 0) stations[nearby].dataset.near = "true";
-        updateHint();
-    }
-
-    function stopMoving() {
+    function setPhase(nextPhase) {
+        phase = nextPhase;
+        overlay.hidden = phase === "playing";
+        pauseButton.hidden = phase !== "playing";
+        if (phase === "playing") return;
         cancelAnimationFrame(frame);
         frame = 0;
-        lastTime = 0;
-        destination = null;
-        keys.clear();
-        rover.removeAttribute("data-moving");
+        lastTick = 0;
+        clearControls();
+        overlayTitle.textContent = phase === "done" ? copy.done :
+            phase === "paused" ? copy.paused : copy.chapters[index].title;
+        overlayText.textContent = phase === "done" ? copy.completion : copy.goal;
+        playButton.textContent = phase === "done" ? copy.portfolio :
+            phase === "paused" ? copy.resume : copy.play;
     }
 
-    function tick(time) {
+    function loadChapter() {
+        index = Math.min(progress.completed, questLevels.length - 1);
+        const level = questLevels[index];
+        run = questEngine.create(level, progress.inventory[index]);
+        requestArt(level.id);
+        game.style.setProperty("--chapter-accent", level.palette.accent);
+        chapterID.textContent = `${copy.chapter} 0${index + 1} / 0${questLevels.length}`;
+        levelName.textContent = copy.chapters[index].title;
+        setPhase(progress.completed === questLevels.length ? "done" : "ready");
+        speak(progress.completed === questLevels.length ? copy.completion : copy.stageHint);
+        renderChapters();
+        renderInventory();
+        paint();
+    }
+
+    function pause(focus = false) {
+        if (phase !== "playing") return;
+        setPhase("paused");
+        if (focus) playButton.focus({ preventScroll: true });
+    }
+
+    function isHeld(codes, touch) {
+        return codes.some(code => keys.has(code)) || [...pointers.values()].includes(touch);
+    }
+
+    function advance(now) {
         frame = 0;
-        const travel = speed * Math.min((time - lastTime) / 1000 || .016, .1);
-        lastTime = time;
-
-        if (destination) {
-            const dx = destination.x - position.x;
-            const dy = destination.y - position.y;
-            const remaining = distance(dx, dy);
-            if (remaining <= travel) {
-                const arrival = destination;
-                destination = null;
-                placeRover(arrival.x, arrival.y);
-                if (arrival.station !== undefined) openStation(arrival.station);
-            } else {
-                placeRover(position.x + dx * travel / remaining, position.y + dy * travel / remaining);
-            }
-        } else if (keys.size) {
-            const held = new Set([...keys].map(key => directions.get(key)));
-            const dx = Number(held.has("right")) - Number(held.has("left"));
-            const dy = Number(held.has("down")) - Number(held.has("up"));
-            const length = Math.hypot(dx, dy) || 1;
-            placeRover(position.x + travel * dx / length, position.y + travel * dy * map.ratio / length);
-        }
-
-        if (destination || keys.size) motionFrame();
-        else stopMoving();
+        if (phase !== "playing") return;
+        const elapsed = Math.min(Math.max((now - lastTick) / 1000, 0), .13);
+        lastTick = now;
+        const input = {
+            axis: Number(isHeld(rightCodes, "right")) - Number(isHeld(leftCodes, "left")),
+            jump: nextJump,
+            hold: isHeld(jumpCodes, "jump"),
+        };
+        nextJump = false;
+        for (const event of questEngine.step(run, input, elapsed)) handleEvent(event);
+        paint();
+        if (phase === "playing") frame = requestAnimationFrame(advance);
     }
 
-    function motionFrame() {
-        if (frame) return;
-        if (!lastTime) lastTime = performance.now();
-        rover.setAttribute("data-moving", "");
-        frame = requestAnimationFrame(tick);
-    }
-
-    function moveTo(x, y, station) {
-        stopMoving();
-        const targetX = clamp(x, map.left, map.right);
-        const targetY = clamp(y, map.top, map.bottom);
-        if (reducedMotion.matches) {
-            placeRover(targetX, targetY);
-            if (station !== undefined) openStation(station);
+    function play() {
+        if (phase === "done") {
+            location.hash = "portfolio";
             return;
         }
-        destination = { x: targetX, y: targetY, station };
-        motionFrame();
+        if (phase === "playing" || dialog.open || game.hidden) return;
+        setPhase("playing");
+        stage.focus({ preventScroll: true });
+        lastTick = performance.now();
+        frame = requestAnimationFrame(advance);
     }
 
-    function visitStation(index, trigger) {
-        if (index > completed || dialog.open) return;
-        returnFocus = trigger;
-        const terminal = terminals[index];
-        moveTo(terminal.x, terminal.y + 8, index);
-    }
-
-    function showDialog(context, title, detail, children) {
-        stopMoving();
-        dialogContext.textContent = context;
+    function showDialog(kicker, title, content, focusTarget) {
+        pause();
+        focusAfterDialog = focusTarget;
+        dialogContext.textContent = kicker;
         const heading = element("h2", "", title);
         heading.id = "quest-dialog-title";
         heading.tabIndex = -1;
-        dialogBody.replaceChildren(heading);
-        if (detail) dialogBody.append(element("p", "", detail));
-        dialogBody.append(...children);
+        dialogBody.replaceChildren(heading, ...content);
         if (!dialog.open) dialog.showModal();
         dialog.scrollTop = 0;
         heading.focus({ preventScroll: true });
     }
 
-    function openStation(index) {
-        if (index > completed || game.hidden || dialog.open) return;
-        activeDialog = index;
-        if (index < completed) {
-            showReward(index, false);
-            return;
+    function showDossier(chapterIndex, justUnlocked) {
+        const level = questLevels[chapterIndex];
+        const chapter = copy.chapters[chapterIndex];
+        const portrait = game.querySelector(".quest-profile img").cloneNode();
+        const biography = portfolio.querySelector(`[data-bio-chapter="${chapterIndex}"]`).textContent;
+        const bio = element("div", "bio-card");
+        const bioText = element("div");
+        bioText.append(element("h3", "", chapter.bio), element("p", "", biography));
+        bio.append(portrait, bioText);
+        const skills = element("ul", "dossier-skills");
+        for (const [id] of level.pickups) {
+            if (id === "file") continue;
+            const li = element("li");
+            li.append(cardIcon(id), element("span", "", questSkillNames[id]));
+            skills.append(li);
         }
 
-        const terminal = terminals[index];
-        const scenario = copy[terminal.challenge];
-        const feedback = element("p", "challenge-feedback");
-        feedback.setAttribute("role", "status");
-        const reward = () => completeMission(index);
-        const challenge = {
-            diagnostics: buildDiagnostics,
-            web: buildCatalog,
-            api: buildContract,
-        }[terminal.challenge](scenario, feedback, reward);
-        showDialog(`${copy.mission} 0${index + 1}`, scenario.title, scenario.instruction, [challenge, feedback]);
-    }
-
-    function buildDiagnostics(scenario, feedback, reward) {
-        const grid = element("div", "challenge");
-        const labels = element("div", "diagnostic-grid diagnostic-labels");
-        labels.append(...scenario.columns.map(label => element("span", "", label)));
-        grid.append(labels);
-
-        scenario.rows.forEach(([name, expected, actual]) => {
-            const row = button("", "challenge-option diagnostic-grid", () => {
-                if (expected !== actual) reward();
-                else feedback.textContent = scenario.retry;
-            });
-            row.setAttribute("aria-label", `${name}. ${scenario.columns[1]}: ${expected}. ${scenario.columns[2]}: ${actual}.`);
-            row.append(...[name, expected, actual].map(label => element("span", "", label)));
-            grid.append(row);
-        });
-        return grid;
-    }
-
-    function buildCatalog(scenario, feedback, reward) {
-        const catalog = element("div", "challenge catalog");
-        const grid = element("div", "catalog-grid");
-        let filtered = false;
-        const filter = button(scenario.filter, "quest-button", () => {
-            filtered = !filtered;
-            filter.setAttribute("aria-pressed", String(filtered));
-            cards[3].hidden = filtered;
-            feedback.textContent = "";
-        });
-        filter.setAttribute("aria-pressed", "false");
-
-        // The adapter is filtered correctly. The out-of-stock headset is the simulated defect.
-        const stock = [true, false, true, false];
-        const cards = scenario.items.map((name, index) => {
-            const available = stock[index];
-            const card = button("", "challenge-option catalog-item", () => {
-                if (!filtered) feedback.textContent = scenario.useFilter;
-                else if (available) feedback.textContent = scenario.retry;
-                else reward();
-            });
-            card.dataset.inStock = String(available);
-            card.append(element("strong", "", name), element("small", "", available ? scenario.inStock : scenario.outOfStock));
-            return card;
-        });
-        grid.append(...cards);
-        catalog.append(filter, grid);
-        return catalog;
-    }
-
-    function buildContract(scenario, feedback, reward) {
-        const challenge = element("div", "challenge");
-        const contract = element("dl", "contract");
-        contract.setAttribute("aria-label", scenario.contract);
-        const fields = ["id", "name", "active"];
-        const response = { id: 42, name: "Demo", active: "true" };
-        const expectedTypes = ["number", "string", "boolean"];
-        const terminal = element("div", "response");
-        const lines = element("div", "response-lines");
-
-        fields.forEach((field, index) => {
-            const expected = element("div");
-            expected.append(element("dt", "", field), element("dd", "", scenario.types[index]));
-            contract.append(expected);
-
-            const value = response[field];
-            const comma = index < fields.length - 1 ? "," : "";
-            lines.append(button(`"${field}": ${JSON.stringify(value)}${comma}`, "challenge-option", () => {
-                if (typeof value !== expectedTypes[index]) reward();
-                else feedback.textContent = scenario.retry;
-            }));
-        });
-
-        terminal.append(
-            element("p", "response-status", "200 OK"),
-            element("div", "", "{"),
-            lines,
-            element("div", "", "}")
-        );
-        challenge.append(contract, terminal);
-        return challenge;
-    }
-
-    function completeMission(index) {
-        if (index > completed) return;
-        if (index === completed) {
-            completed += 1;
-            saveProgress();
-            renderProgress();
+        const reward = element("div", "dossier-content");
+        if (chapterIndex > 0) {
+            const project = document.getElementById(level.section).cloneNode(true);
+            project.removeAttribute("id");
+            reward.append(project);
         }
-        showReward(index, true);
-    }
-
-    function showReward(index, justUnlocked) {
-        const terminal = terminals[index];
-        const heading = missions[index].querySelector(".mission-copy > span").textContent;
-        const content = document.querySelector(terminal.reward).cloneNode(true);
-        content.removeAttribute("id");
-        const reward = element("div", "reward-content");
-        reward.append(content);
-
         const actions = element("div", "dialog-actions");
-        actions.append(button(copy.back, "quest-button primary", () => {
-            if (justUnlocked && returnFocus !== world) returnFocus = nextButton;
-            dialog.close();
-            if (justUnlocked && !reducedMotion.matches) {
-                world.setAttribute("data-sweep", "");
+        if (justUnlocked && progress.completed < questLevels.length) {
+            actions.append(button(copy.next, "quest-button primary", () => {
+                dialog.close();
+                play();
+            }));
+        } else if (justUnlocked) {
+            actions.append(link(copy.portfolio, "quest-button primary", "#portfolio"));
+        } else {
+            actions.append(button(copy.back, "quest-button primary", () => dialog.close()));
+        }
+        actions.append(link(copy.viewSection, "quest-button", `#${level.section}`));
+        showDialog(
+            justUnlocked ? `${copy.won} · ${chapterIndex + 1} / ${questLevels.length}` : copy.unlocked,
+            chapter.reward,
+            [bio, skills, reward, actions],
+            justUnlocked ? playButton : chapters[chapterIndex]
+        );
+    }
+
+    function handleEvent(event) {
+        switch (event.kind) {
+            case "pickup":
+                progress.inventory[index] = [...run.collected];
+                saveProgress();
+                renderInventory();
+                speak(event.id === "file" ? copy.fileCollected : copy.found(questSkillNames[event.id]), event.kind);
+                break;
+            case "checkpoint":
+                speak(copy.checkpoint, event.kind);
+                break;
+            case "bug":
+            case "fall":
+                speak(copy[event.kind], event.kind);
+                break;
+            case "missing":
+                speak(copy.incomplete(event.remaining), event.kind);
+                break;
+            case "finish": {
+                const finished = index;
+                progress.completed = finished + 1;
+                saveProgress();
+                loadChapter();
+                showDossier(finished, true);
+                break;
             }
-        }));
-        showDialog(copy.reward, heading, null, [
-            element("p", "reward-status", justUnlocked ? copy[terminal.challenge].success : copy.states.done),
-            reward,
-            actions,
-        ]);
+        }
     }
 
     function confirmReset() {
-        returnFocus = resetButton;
         const actions = element("div", "dialog-actions");
         actions.append(
             button(copy.cancel, "quest-button", () => dialog.close()),
-            button(copy.reset, "quest-button primary", () => {
-                completed = 0;
+            button(copy.startOver, "quest-button primary", () => {
+                progress = cleanProgress(null);
                 saveProgress();
-                placeRover(start.x, start.y);
-                renderProgress();
-                returnFocus = nextButton;
+                loadChapter();
+                focusAfterDialog = playButton;
                 dialog.close();
             })
         );
-        showDialog(copy.reset, copy.reset, copy.resetDetail, [actions]);
+        showDialog(copy.startOver, copy.startOver, [element("p", "", copy.resetDetail), actions], resetButton);
     }
 
     function syncView() {
@@ -391,16 +353,14 @@
         const otherLink = showPortfolio ? gameLink : portfolioLink;
         currentLink.setAttribute("aria-current", "page");
         otherLink.removeAttribute("aria-current");
-        const homeLink = document.querySelector("[data-home]");
         homeLink.href = "#game";
 
-        languageLinks.forEach(link => {
-            const page = link.getAttribute("href").split("#")[0];
-            link.href = page + (showPortfolio ? location.hash : "");
-        });
-
+        for (const link of languageLinks) {
+            const path = link.getAttribute("href").split("#")[0];
+            link.href = path + (showPortfolio ? location.hash : "");
+        }
         if (showPortfolio) {
-            stopMoving();
+            pause();
             if (dialog.open) dialog.close();
             const details = anchor.closest("details");
             if (details) details.open = true;
@@ -408,77 +368,76 @@
             else anchor.scrollIntoView();
         } else {
             window.scrollTo(0, 0);
+            paint();
         }
     }
 
-    stations.forEach((station, index) => {
-        setCoordinates(station, terminals[index]);
-        station.addEventListener("click", () => visitStation(index, station));
-        missions[index].addEventListener("click", () => {
-            if (index < completed) {
-                returnFocus = missions[index];
-                openStation(index);
-            } else {
-                visitStation(index, missions[index]);
+    playButton.addEventListener("click", play);
+    pauseButton.addEventListener("click", () => pause(true));
+    resetButton.addEventListener("click", confirmReset);
+    canvas.addEventListener("pointerdown", () => {
+        if (phase === "playing") stage.focus({ preventScroll: true });
+    });
+    chapters.forEach((chapter, chapterIndex) => {
+        chapter.addEventListener("click", () => {
+            if (chapterIndex < progress.completed) showDossier(chapterIndex, false);
+            else if (chapterIndex === index) {
+                stage.scrollIntoView({ block: "nearest" });
+                play();
             }
         });
     });
-
-    world.addEventListener("click", event => {
-        if (event.target.closest("[data-station]") || dialog.open) return;
-        const bounds = world.getBoundingClientRect();
-        world.focus({ preventScroll: true });
-        moveTo((event.clientX - bounds.left) / bounds.width * 100, (event.clientY - bounds.top) / bounds.height * 100);
-    });
-    world.addEventListener("animationend", event => {
-        if (event.animationName === "sweep") world.removeAttribute("data-sweep");
-    });
-
-    nextButton.addEventListener("click", () => {
-        if (completed === terminals.length) location.hash = "portfolio";
-        else visitStation(completed, nextButton);
-    });
-    resetButton.addEventListener("click", confirmReset);
     dialog.querySelector("[data-close]").addEventListener("click", () => dialog.close());
     dialog.addEventListener("close", () => {
         dialogBody.replaceChildren();
-        activeDialog = -1;
-        if (!game.hidden) (returnFocus ?? world).focus({ preventScroll: true });
-        returnFocus = null;
+        if (!game.hidden && phase !== "playing") focusAfterDialog?.focus({ preventScroll: true });
+        focusAfterDialog = null;
     });
 
     document.addEventListener("keydown", event => {
         if (game.hidden || dialog.open || event.altKey || event.ctrlKey || event.metaKey) return;
-        if (event.target.closest("a, button, input, select, textarea, [contenteditable]")) return;
-        if (directions.has(event.code)) {
-            event.preventDefault();
-            destination = null;
-            keys.add(event.code);
-            motionFrame();
-        } else if (event.code === "KeyE" && !event.repeat) {
-            event.preventDefault();
-            returnFocus = world;
-            if (nearby < 0) showHint(copy.farHint);
-            else if (nearby > completed) showHint(copy.lockedHint);
-            else openStation(nearby);
+        if (event.code === "Escape" && phase === "playing") {
+            pause(true);
+            return;
         }
+        if (phase === "done" || !movementCodes.has(event.code) ||
+            event.target.closest?.("a, button, input, select, textarea, [contenteditable]")) return;
+        event.preventDefault();
+        if (phase !== "playing") play();
+        if (jumpCodes.includes(event.code) && !isHeld(jumpCodes, "jump")) nextJump = true;
+        keys.add(event.code);
     });
     document.addEventListener("keyup", event => keys.delete(event.code));
-    window.addEventListener("blur", stopMoving);
+    game.querySelectorAll("[data-touch]").forEach(control => {
+        control.addEventListener("pointerdown", event => {
+            if (dialog.open || phase === "done" || event.button > 0) return;
+            event.preventDefault();
+            if (phase !== "playing") play();
+            const direction = control.dataset.touch;
+            if (direction === "jump" && !isHeld(jumpCodes, "jump")) nextJump = true;
+            pointers.set(event.pointerId, direction);
+            control.setPointerCapture(event.pointerId);
+        });
+        for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) {
+            control.addEventListener(type, event => pointers.delete(event.pointerId));
+        }
+    });
+
+    window.addEventListener("blur", () => pause());
     document.addEventListener("visibilitychange", () => {
-        if (document.hidden) stopMoving();
+        if (document.hidden) pause();
     });
     window.addEventListener("hashchange", syncView);
     window.addEventListener("storage", event => {
         if (event.key !== storageKey && event.key !== null) return;
-        saved = readProgress();
-        if (saved === null) return;
-        completed = saved;
-        if (activeDialog > completed && dialog.open) dialog.close();
-        renderProgress();
+        progress = readProgress();
+        if (dialog.open) dialog.close();
+        loadChapter();
     });
+    smallScreen.addEventListener("change", sizeStage);
+    reducedMotion.addEventListener("change", paint);
 
-    placeRover(start.x, start.y);
-    renderProgress();
+    sizeStage();
+    loadChapter();
     syncView();
 })();
